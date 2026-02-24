@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 import {
   RocketLaunchIcon,
   MoonIcon,
@@ -21,6 +22,11 @@ import {
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
+
+  const swalConfig = {
+    background: isDarkMode ? "#0f172a" : "#ffffff",
+    color: isDarkMode ? "#f1f5f9" : "#0f172a",
+  };
 
   useEffect(() => {
     if (isDarkMode) {
@@ -73,14 +79,31 @@ function App() {
   }, []);
 
   const guardarCliente = async () => {
-    if (!documento || !correo) return alert("Faltan datos.");
+    if (!documento || !correo) {
+      return Swal.fire({
+        ...swalConfig,
+        icon: "warning",
+        title: "Faltan datos",
+        text: "Por favor, ingresa la identificación y el correo.",
+        confirmButtonColor: "#2563eb",
+      });
+    }
+
     const res = await fetch("http://localhost:8080/api/clientes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ rucDni: documento, email: correo }),
     });
+
     if (res.ok) {
-      alert("Cliente guardado");
+      Swal.fire({
+        ...swalConfig,
+        icon: "success",
+        title: "¡Éxito!",
+        text: "Cliente guardado correctamente.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
       setDocumento("");
       setCorreo("");
       cargarData();
@@ -88,7 +111,16 @@ function App() {
   };
 
   const guardarServicio = async () => {
-    if (!nombreServicio) return alert("Falta el nombre del servicio.");
+    if (!nombreServicio) {
+      return Swal.fire({
+        ...swalConfig,
+        icon: "warning",
+        title: "Faltan datos",
+        text: "Por favor, ingresa el nombre del servicio.",
+        confirmButtonColor: "#4f46e5",
+      });
+    }
+
     const res = await fetch("http://localhost:8080/api/servicios", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -100,8 +132,16 @@ function App() {
             : descripcionServicio,
       }),
     });
+
     if (res.ok) {
-      alert("Servicio guardado");
+      Swal.fire({
+        ...swalConfig,
+        icon: "success",
+        title: "¡Éxito!",
+        text: "Servicio guardado correctamente.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
       setNombreServicio("");
       setDescripcionServicio("");
       cargarData();
@@ -109,52 +149,129 @@ function App() {
   };
 
   const eliminarCliente = async (id) => {
-    const confirmar = window.confirm(
-      "¿Estás seguro de eliminar este cliente permanentemente?",
-    );
-    if (!confirmar) return;
+    const confirmacion = await Swal.fire({
+      ...swalConfig,
+      title: "¿Estás seguro?",
+      text: "Eliminarás este cliente permanentemente.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#64748b",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (!confirmacion.isConfirmed) return;
 
     try {
       const res = await fetch(`http://localhost:8080/api/clientes/${id}`, {
         method: "DELETE",
       });
       if (res.ok) {
-        alert("Cliente eliminado con éxito.");
+        Swal.fire({
+          ...swalConfig,
+          icon: "success",
+          title: "Eliminado",
+          text: "El cliente ha sido borrado con éxito.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
         cargarData();
       } else {
-        alert("Error al eliminar. (Tal vez ya tiene recibos emitidos).");
+        Swal.fire({
+          ...swalConfig,
+          icon: "error",
+          title: "Error al eliminar",
+          text: "No se pudo borrar. Tal vez el cliente ya tiene recibos emitidos.",
+          confirmButtonColor: "#ef4444",
+        });
       }
     } catch (error) {
       console.error(error);
-      alert("Error de conexión al intentar eliminar.");
+      Swal.fire({
+        ...swalConfig,
+        icon: "error",
+        title: "Error de conexión",
+        text: "No se pudo conectar al servidor al intentar eliminar.",
+        confirmButtonColor: "#ef4444",
+      });
     }
   };
 
   const emitirRecibo = async () => {
-    if (!clienteId || !servicioId || !montoBruto)
-      return alert("Completa los campos.");
-    const res = await fetch("http://localhost:8080/api/recibos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ clienteId, servicioId, montoBruto }),
-    });
-    if (!res.ok) return alert("Error al emitir.");
-    const recibo = await res.json();
-    const pdf = await fetch(
-      `http://localhost:8080/api/recibos/${recibo.id}/pdf`,
-    );
-    if (pdf.ok) {
-      const url = window.URL.createObjectURL(await pdf.blob());
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Recibo_${recibo.id}.pdf`;
-      a.click();
+    if (!clienteId || !servicioId || !montoBruto) {
+      return Swal.fire({
+        ...swalConfig,
+        icon: "warning",
+        title: "Faltan datos",
+        text: "Completa todos los campos para emitir el recibo.",
+        confirmButtonColor: "#2563eb",
+      });
+    }
 
-      setClienteId("");
-      setBusquedaCliente("");
-      setServicioId("");
-      setBusquedaServicio("");
-      setMontoBruto("");
+    Swal.fire({
+      ...swalConfig,
+      title: "Generando documento...",
+      text: "Por favor espera un momento.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    try {
+      const res = await fetch("http://localhost:8080/api/recibos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clienteId, servicioId, montoBruto }),
+      });
+
+      if (!res.ok) {
+        return Swal.fire({
+          ...swalConfig,
+          icon: "error",
+          title: "Error al emitir",
+          text: "Ocurrió un problema en el servidor.",
+          confirmButtonColor: "#2563eb",
+        });
+      }
+
+      const recibo = await res.json();
+      const pdf = await fetch(
+        `http://localhost:8080/api/recibos/${recibo.id}/pdf`,
+      );
+
+      if (pdf.ok) {
+        const url = window.URL.createObjectURL(await pdf.blob());
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Recibo_${recibo.id}.pdf`;
+        a.click();
+
+        Swal.fire({
+          ...swalConfig,
+          icon: "success",
+          title: "¡Recibo Emitido!",
+          text: "La descarga ha comenzado.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+
+        setClienteId("");
+        setBusquedaCliente("");
+        setServicioId("");
+        setBusquedaServicio("");
+        setMontoBruto("");
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        ...swalConfig,
+        icon: "error",
+        title: "Error de red",
+        text: "No se pudo conectar con el servidor.",
+        confirmButtonColor: "#2563eb",
+      });
     }
   };
 
