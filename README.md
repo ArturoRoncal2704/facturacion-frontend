@@ -41,9 +41,9 @@ Este repositorio contiene el cliente web de **CarhPay**, una plataforma moderna 
     ```
 4. Abrir en el navegador: http://localhost:5174 (o el puerto que indique la consola).
 
-📸 Capturas de Pantalla
+## 📸 Capturas de Pantalla
 
-👨‍💻 Autor
+## 👨‍💻 Autor
 Carlos Arturo Roncal Hermenegildo
 * Desarrollador de Software
 * [![GitHub](https://img.shields.io/badge/GitHub-ArturoRoncal2704-181717?style=flat&logo=github)](https://github.com/ArturoRoncal2704)
