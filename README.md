@@ -1,16 +1,49 @@
-# React + Vite
+# 🚀 CarhPay - Frontend de Emisión de Recibos
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Estado](https://img.shields.io/badge/Estado-En_Desarrollo-green)
+![React](https://img.shields.io/badge/Frontend-React_Vite-61DAFB?logo=react)
+![Tailwind CSS](https://img.shields.io/badge/Estilos-Tailwind_CSS-38B2AC?logo=tailwind-css)
 
-Currently, two official plugins are available:
+## 📌 Descripción del Proyecto
+Este repositorio contiene el cliente web de **CarhPay**, una plataforma moderna para la gestión de clientes, catálogo de servicios y la emisión automatizada de recibos por honorarios electrónicos. Construido con React, está diseñado para ofrecer una experiencia de usuario (UX) fluida, intuitiva y altamente responsiva.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Características Principales
+* **Diseño Responsivo y Moderno:** Interfaz construida con Tailwind CSS, con soporte nativo para **Modo Oscuro / Claro**.
+* **Búsqueda Inteligente:** Filtros dinámicos (Typeahead) para seleccionar rápidamente clientes y servicios sin recargar la página.
+* **UX Avanzada:** Integración de `SweetAlert2` para notificaciones interactivas, alertas de éxito y prevención de acciones destructivas (como el borrado accidental).
+* **Consumo de API REST:** Sincronización asíncrona mediante `fetch` para operaciones CRUD y descarga directa de archivos binarios (PDFs).
 
-## React Compiler
+## 🛠️ Stack Tecnológico
+* **Core:** React 18 + Vite
+* **Estilos:** Tailwind CSS
+* **Iconografía:** Heroicons (Solid 24)
+* **Alertas:** SweetAlert2
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Instalación y Despliegue
 
-## Expanding the ESLint configuration
+### Requisitos Previos
+* Node.js (v16 o superior)
+* npm o yarn
+* Tener el [Backend de CarhPay](https://github.com/ArturoRoncal2704/facturacion-api) corriendo localmente en el puerto 8080.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Pasos para ejecutar
+1. Clonar el repositorio:
+   ```bash
+   git clone https://github.com/ArturoRoncal2704/facturacion-frontend.git
+   ```
+2. Instalar las dependencias:
+   ```bash
+   npm install
+   ```
+3. Levantar el servidor de desarrollo:
+    ```bash
+    npm run dev
+    ```
+4. Abrir en el navegador: http://localhost:5174 (o el puerto que indique la consola).
+
+📸 Capturas de Pantalla
+
+👨‍💻 Autor
+Carlos Arturo Roncal Hermenegildo
+* Desarrollador de Software
+* [![GitHub](https://img.shields.io/badge/GitHub-ArturoRoncal2704-181717?style=flat&logo=github)](https://github.com/ArturoRoncal2704)
